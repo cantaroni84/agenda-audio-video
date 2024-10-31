@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda de Sonido, Video y Plataforma</title>
+    <style>
+        /* Estilo básico de la tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        /* Encabezado de la tabla con color de fondo */
+        th {
+            background-color: #add8e6; /* Azul claro */
+            color: #000;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border: 1px solid #ddd;
+        }
+
+        /* Celdas de la tabla */
+        td {
+            padding: 8px;
+            text-align: center;
+            border: 1px solid #ddd;
+        }
+
+        /* Botón de actualizar */
+        #actualizar-btn {
+            margin-top: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+            background-color: #4CAF50; /* Verde */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        /* Hover en el botón */
+        #actualizar-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h2>Agenda de Sonido, Video y Plataforma</h2>
+    <button id="actualizar-btn">Actualizar</button>
+
+    <table id="agenda-table">
+        <tr>
+            <th>Fecha</th>
+            <th>Sonido</th>
+            <th>Video</th>
+            <th>Plataforma</th>
+        </tr>
+    </table>
+
+    <script>
+        // Función para generar las fechas de jueves y domingo
+        function obtenerProximasFechas() {
+            const hoy = new Date();
+            const fechas = [];
+            let dia = hoy.getDay();
+            let diasHastaJueves = (4 - dia + 7) % 7;
+            let diasHastaDomingo = (0 - dia + 7) % 7;
+
+            // Generar fechas para los próximos 10 jueves y domingos
+            for (let i = 0; i < 10; i++) {
+                const fechaJueves = new Date(hoy);
+                fechaJueves.setDate(hoy.getDate() + diasHastaJueves + i * 7);
+                fechas.push(fechaJueves);
+
+                const fechaDomingo = new Date(hoy);
+                fechaDomingo.setDate(hoy.getDate() + diasHastaDomingo + i * 7);
+                fechas.push(fechaDomingo);
+            }
+            return fechas;
+        }
+
+        // Función para llenar la tabla con las fechas y asignaciones
+        function llenarAgenda() {
+            const agendaTable = document.getElementById("agenda-table");
+            // Limpiar las filas excepto el encabezado
+            agendaTable.innerHTML = `
+                <tr>
+                    <th>Fecha</th>
+                    <th>Sonido</th>
+                    <th>Video</th>
+                    <th>Plataforma</th>
+                </tr>
+            `;
+
+            const proximasFechas = obtenerProximasFechas();
+            const sonido = ["Fierro", "Cardinaletti", "Cantaroni", "Castillo", "Cardinaletti", "Quevedo", "Cantaroni", "Quevedo", "Fierro", "Cantaroni"];
+            const video = ["Gartner", "Castillo", "Gartner", "Quevedo", "Cantaroni", "Fierro", "Cardinaletti", "Castillo", "Cardinaletti", "Quevedo"];
+            const plataforma = ["Maldonado", "Gartner", "Maldonado", "Gartner", "Maldonado", "Gartner", "Maldonado", "Gartner", "Maldonado", "Maldonado"];
+
+            for (let i = 0; i < proximasFechas.length && i < sonido.length; i++) {
+                const fecha = proximasFechas[i];
+                const formatoFecha = fecha.toLocaleDateString("es-ES", { day: 'numeric', month: 'short' });
+
+                const fila = `
+                    <tr>
+                        <td>${formatoFecha}</td>
+                        <td>${sonido[i % sonido.length]}</td>
+                        <td>${video[i % video.length]}</td>
+                        <td>${plataforma[i % plataforma.length]}</td>
+                    </tr>
+                `;
+                agendaTable.innerHTML += fila;
+            }
+        }
+
+        // Llenar la agenda al cargar la página
+        llenarAgenda();
+
+        // Actualizar la agenda al hacer clic en el botón
+        document.getElementById("actualizar-btn").addEventListener("click", llenarAgenda);
+    </script>
+</body>
+</html>
